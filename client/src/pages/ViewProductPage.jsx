@@ -69,12 +69,23 @@ function ViewProductPage() {
           {!isLoading && error && <p className="subtle-meta">{error}</p>}
 
           {!isLoading && !error && product && (
-            <article>
-              <h2>{product.name}</h2>
-              <p className="product-price">
-                ฿{Number(product.price).toLocaleString()}
-              </p>
-              <p>{product.description}</p>
+            <article className="product">
+              <div className="product-preview">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  width="350"
+                  height="350"
+                />
+              </div>
+              <div className="product-detail">
+                <h2 className="product-title">{product.name}</h2>
+                <p className="product-price">
+                  ฿{Number(product.price).toLocaleString()}
+                </p>
+                <p className="product-description">{product.description}</p>
+                <p className="subtle-meta">ID: {product.id}</p>
+              </div>
             </article>
           )}
         </section>
