@@ -3,19 +3,31 @@ import EditProductForm from "../components/EditProductForm";
 
 function EditProductPage() {
   const navigate = useNavigate();
+
   return (
-    <div>
-      <h1>Edit Product Page</h1>
-      <EditProductForm />
-      <button
-        type="button"
-        onClick={() => {
-          navigate("/");
-        }}
-      >
-        Back to Home
-      </button>
-    </div>
+    <main className="layout-main-full">
+      <section className="card">
+        <header className="card-header">
+          <div>
+            <h2>Edit product</h2>
+            <p className="subtle-meta">
+              Refine details while keeping the interface quiet.
+            </p>
+          </div>
+          <button
+            type="button"
+            className="ghost-button"
+            onClick={() => {
+              navigate("/");
+            }}
+          >
+            Back to list
+          </button>
+        </header>
+
+        <EditProductForm />
+      </section>
+    </main>
   );
 }
 

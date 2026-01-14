@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 function HomePage() {
   const [products, setProducts] = useState([]);
   const [isError, setIsError] = useState(null);
-  const [isLoading, setIsLoading] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const getProducts = async () => {
@@ -13,19 +13,18 @@ function HomePage() {
       setIsError(false);
       setIsLoading(true);
       const results = await axios.get("http://localhost:4001/products/");
-      console.log(results.data.data);
       setProducts(results.data.data);
-      setIsLoading(false);
     } catch (error) {
       setIsError(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const deleteProduct = async (productID) => {
     try {
-      const results = await axios.delete(
-        `http://localhost:4001/products/${productID}`
-      );
+      await axios.delete(`http://localhost:4001/products/${productID}`);
+      setProducts((prev) => prev.filter((p) => p.id !== productID));
     } catch (error) {
       console.log(error);
     }
@@ -33,63 +32,101 @@ function HomePage() {
 
   useEffect(() => {
     getProducts();
-  }, [products]);
+  }, []);
 
   return (
-    <div>
-      <div className="app-wrapper">
-        <h1 className="app-title">Products</h1>
-        <button onClick={() => navigate("/create")}>Create Product</button>
-      </div>
-      <div className="product-list">
-        {products.map((product) => {
-          return (
-            <div className="product">
-              <div className="product-preview">
-                <img
-                  src="https://via.placeholder.com/250/250"
-                  alt="some product"
-                  width="250"
-                  height="250"
-                />
-              </div>
-              <div className="product-detail">
-                <h1>Product name: {product.name} </h1>
-                <h2>Product price: {product.price}</h2>
-                <p>Product description: {product.description} </p>
+    <main className="layout-main">
+      <section className="card">
+        <header className="card-header">
+          <div>
+            <h2>Products</h2>
+            <p className="subtle-meta">
+              Product overview 
+            </p>
+          </div>
+          <button
+            type="button"
+            className="primary-button"
+            onClick={() => navigate("/create")}
+          >
+            New Product
+          </button>
+        </header>
+
+        <div className="card-body">
+          {isLoading && <p className="subtle-meta">Loading products…</p>}
+          {isError && (
+            <p className="subtle-meta">Request failed. Please try again.</p>
+          )}
+
+          {!isLoading && !products.length && !isError && (
+            <p className="subtle-meta">
+              No products yet. Create your first product to get started.
+            </p>
+          )}
+
+          <div className="product-list">
+            {products.map((product) => (
+              <article key={product.id} className="product">
+                <div className="product-preview">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    width="72"
+                    height="72"
+                  />
+                </div>
+                <div className="product-detail">
+                  <h3 className="product-title">{product.name}</h3>
+                  <p className="product-price">
+                    ฿{Number(product.price).toLocaleString()}
+                  </p>
+                  <p className="product-description">
+                    {product.description || "No description provided."}
+                  </p>
+                </div>
                 <div className="product-actions">
                   <button
-                    className="view-button"
-                    onClick={() => {
-                      navigate(`/view/${product.id}`);
-                    }}
+                    type="button"
+                    className="chip-button"
+                    onClick={() => navigate(`/view/${product.id}`)}
                   >
                     View
                   </button>
                   <button
-                    className="edit-button"
-                    onClick={() => {
-                      navigate(`/edit/${product.id}`);
-                    }}
+                    type="button"
+                    className="chip-button"
+                    onClick={() => navigate(`/edit/${product.id}`)}
                   >
                     Edit
                   </button>
+                  <button
+                    type="button"
+                    className="chip-button chip-button--danger"
+                    onClick={() => deleteProduct(product.id)}
+                  >
+                    Delete
+                  </button>
                 </div>
-              </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
 
-              <button
-                className="delete-button"
-                onClick={() => deleteProduct(product.id)}
-              >
-                x
-              </button>
-            </div>
-          );
-        })}
-      </div>
-      {isError ? <h1>Request failed</h1> : null}
-      {/* {isLoading ? <h1>Loading ....</h1> : null} */}
-    </div>
+      <section className="card">
+        <header className="card-header">
+          <h2>Activity</h2>
+          <span>Today</span>
+        </header>
+        <div className="card-body">
+          <p className="subtle-meta">
+            Use the actions on the left to create, inspect, and refine your
+            product catalogue. Changes update in real time.
+          </p>
+        </div>
+      </section>
+    </main>
   );
 }
 

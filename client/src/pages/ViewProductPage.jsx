@@ -47,28 +47,37 @@ function ViewProductPage() {
   }, [id]);
 
   return (
-    <main>
-      <header>
-        <h1>View Product Page</h1>
-      </header>
+    <main className="layout-main-full">
+      <section className="card">
+        <header className="card-header">
+          <div>
+            <h2>Product detail</h2>
+            <p className="subtle-meta">Focused, minimal view of a single item</p>
+          </div>
+          <button
+            type="button"
+            className="ghost-button"
+            onClick={() => navigate("/")}
+          >
+            Back to list
+          </button>
+        </header>
 
-      <section className="view-product-container">
-        {isLoading && <p>Loading...</p>}
+        <section className="view-product-container">
+          {isLoading && <p className="subtle-meta">Loading product…</p>}
 
-        {!isLoading && error && <p>{error}</p>}
+          {!isLoading && error && <p className="subtle-meta">{error}</p>}
 
-        {!isLoading && !error && product && (
-          <article>
-            <h2>Product Title {product.name}</h2>
-            <p>{product.description}</p>
-          </article>
-        )}
-      </section>
-
-      <section>
-        <button type="button" onClick={() => navigate("/")}>
-          Back to Home
-        </button>
+          {!isLoading && !error && product && (
+            <article>
+              <h2>{product.name}</h2>
+              <p className="product-price">
+                ฿{Number(product.price).toLocaleString()}
+              </p>
+              <p>{product.description}</p>
+            </article>
+          )}
+        </section>
       </section>
     </main>
   );

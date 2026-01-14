@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+
 function CreateProductForm() {
   const [productName, setProductName] = useState("");
   const [productDescription, setProductDescription] = useState("");
@@ -9,18 +10,16 @@ function CreateProductForm() {
   const navigate = useNavigate();
 
   async function postProduct() {
-    if (!productName) return;
-    if (!productDescription) return;
-    if (!productPrice) return;
-    if (!productImage) return;
+    if (!productName || !productDescription || !productPrice || !productImage) {
+      return;
+    }
 
-    const request = await axios.post("http://localhost:4001/products/", {
+    await axios.post("http://localhost:4001/products/", {
       name: productName,
       description: productDescription,
       price: productPrice,
       image: productImage,
     });
-    // console.log(request);
   }
 
   async function handleSubmit(e) {
@@ -28,77 +27,80 @@ function CreateProductForm() {
     await postProduct();
     navigate("/");
   }
+
   return (
     <form className="product-form" onSubmit={handleSubmit}>
-      <h1>Create Product Form</h1>
+      <h1>Create product</h1>
+
       <div className="input-container">
-        <label>
-          Name
-          <input
-            id="name"
-            name="name"
-            type="text"
-            placeholder="Enter name here"
-            value={productName}
-            onChange={(e) => {
-              setProductName(e.target.value);
-            }}
-            required
-          />
-        </label>
+        <label htmlFor="name">Name</label>
+        <input
+          id="name"
+          name="name"
+          type="text"
+          className="field"
+          placeholder="Minimal desk lamp, ceramic mug…"
+          value={productName}
+          onChange={(e) => {
+            setProductName(e.target.value);
+          }}
+          required
+        />
       </div>
+
       <div className="input-container">
-        <label>
-          Image Url
-          <input
-            id="image"
-            name="image"
-            type="text"
-            placeholder="Enter image url here"
-            value={productImage}
-            onChange={(e) => {
-              setProductImage(e.target.value);
-            }}
-            required
-          />
-        </label>
+        <label htmlFor="image">Image URL</label>
+        <input
+          id="image"
+          name="image"
+          type="text"
+          className="field"
+          placeholder="https://"
+          value={productImage}
+          onChange={(e) => {
+            setProductImage(e.target.value);
+          }}
+          required
+        />
       </div>
+
       <div className="input-container">
-        <label>
-          Price
-          <input
-            id="price"
-            name="price"
-            type="number"
-            placeholder="Enter price here"
-            value={productPrice}
-            onChange={(e) => {
-              setProductPrice(e.target.value);
-            }}
-            required
-          />
-        </label>
+        <label htmlFor="price">Price</label>
+        <input
+          id="price"
+          name="price"
+          type="number"
+          className="field"
+          placeholder="0.00"
+          value={productPrice}
+          onChange={(e) => {
+            setProductPrice(e.target.value);
+          }}
+          required
+        />
       </div>
+
       <div className="input-container">
-        <label>
-          Description
-          <textarea
-            id="description"
-            name="description"
-            type="text"
-            placeholder="Enter description here"
-            value={productDescription}
-            onChange={(e) => {
-              setProductDescription(e.target.value);
-            }}
-            rows={4}
-            cols={30}
-            required
-          />
-        </label>
+        <label htmlFor="description">Description</label>
+        <textarea
+          id="description"
+          name="description"
+          className="field field-textarea"
+          placeholder="A short, clear description of your product."
+          value={productDescription}
+          onChange={(e) => {
+            setProductDescription(e.target.value);
+          }}
+          rows={4}
+          cols={30}
+          required
+        />
       </div>
+
       <div className="form-actions">
-        <button type="submit">Create</button>
+        <button type="submit" className="primary-button">
+          Create product
+        </button>
       </div>
     </form>
   );
